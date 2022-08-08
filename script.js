@@ -1,3 +1,10 @@
+/* 
+I referenced Michael Karen's Tetris game
+https://github.com/melcor76/js-tetris.git
+*/
+
+
+
 const canvas = document.getElementById('game-board');
 const ctx = canvas.getContext('2d');
 
@@ -149,9 +156,9 @@ class ShapePiece {
                 });
         }
         
-        rotateShape() {
-                this.rotateIdx = ++this.rotateIdx % SHAPES[this.shapeId].length;
-        }
+        // rotateShape() {
+        //         this.rotateIdx = ++this.rotateIdx % SHAPES[this.shapeId].length;
+        // }
         moveHardDrop() {}
 }
 
