@@ -6,19 +6,18 @@ https://github.com/melcor76/js-tetris.git
 
 
 const canvas = document.getElementById('game-board');
+const nextCanvas = document.getElementById('next-shape');
 const ctx = canvas.getContext('2d');
+const nextCtx = nextCanvas.getContext('2d');
 
 const COLS = 10;
 const ROWS = 15;
 const UNIT_SIZE = 60;
 
-// const SHAPE_O = 1;
-// const SHAPE_S = 2;
-// const SHAPE_Z = 3;
-// const SHAPE_J = 4;
-// const SHAPE_L = 5;
-// const SHAPE_T = 6;
-// const SHAPE_I = 7;
+const User = {
+        level: 0, // level 0 -6
+        score: 0
+};
 
 const SHAPES = [
         [],
@@ -120,11 +119,6 @@ const LEVELS = [
         100
 ];
 
-const User = {
-        level: 0,
-        score: 0
-};
-
 class ShapePiece {
         constructor(ctx) {
                 this.ctx = ctx;
@@ -132,12 +126,17 @@ class ShapePiece {
         }
 
         init() {
-                this.x = COLS/2 - 2; // initial center position
+                this.x = 0; // initial center position
                 this.y = 0;
                 this.shapeId = this.createRandomShape();
                 this.color = COLORS[this.shapeId];
                 this.rotateIdx = 0;
                 console.log(this);
+        }
+
+        setInitialPosition() {
+                this.x = COLS/2 - 2; // initial center position
+                this.y = 0;
         }
 
         createRandomShape() {
@@ -156,26 +155,30 @@ class ShapePiece {
                 });
         }
         
-        // rotateShape() {
-        //         this.rotateIdx = ++this.rotateIdx % SHAPES[this.shapeId].length;
-        // }
         moveHardDrop() {}
 }
 
 
 class GameBoard {
-        constructor(ctx) {
+        constructor(ctx, nextCtx) {
                 this.ctx = ctx;
+                this.nextCtx = nextCtx;
                 this.init();
         } 
 
         init() {
                 this.ctx.canvas.width = COLS * UNIT_SIZE;
                 this.ctx.canvas.height = ROWS * UNIT_SIZE;
-                this.shapePiece = new ShapePiece(this.ctx);
+                this.nextCtx.canvas.width = UNIT_SIZE * 4;
+                this.nextCtx.canvas.height = UNIT_SIZE * 4;
                 this.ctx.scale(UNIT_SIZE, UNIT_SIZE);
+                this.nextCtx.scale(UNIT_SIZE, UNIT_SIZE);
                 this.requestId = -1; 
+                this.shapePiece = new ShapePiece(this.ctx);
+                this.shapePiece.setInitialPosition();
+                this.nextPiece = new ShapePiece(this.nextCtx);
                 this.boardArray = this.initBoard();
+                this.nextPiece.draw();
         }
 
         initBoard() {  // setting [rows][cols] = 0
@@ -192,7 +195,7 @@ class GameBoard {
                 for (let i = 0; i < ROWS; i++) {
                         for (let j = 0;  j < COLS; j++) {
                                 if (this.boardArray[i][j] > 0) {
-                                        this.ctx.fillStyle = this.boardArray[i][j];
+                                        this.ctx.fillStyle = COLORS[this.boardArray[i][j]];
                                         this.ctx.fillRect(j, i, 1, 1);
                                 }
                         }
@@ -222,10 +225,11 @@ class GameBoard {
                         this.checkClearLines();
                         if (this.shapePiece.y === 0) {
                                 // GAME OVER
-                                
+                                return false;
                         }
                         this.showNextPiece();
                 }
+                return true;
         }
 
         isValideMove(testPiece) {
@@ -242,7 +246,6 @@ class GameBoard {
 
 
         isInsideGameBoard(x, y) {
-
                 return x >= 0 && x < COLS && y <= ROWS;
         }
 
@@ -260,8 +263,30 @@ class GameBoard {
                         });
                 });
         }
-        checkClearLines() {}
-        showNextPiece() {}
+        checkClearLines() {
+                this.boardArray.forEach((row, j) => {
+                        if (row.every((col) => col > 0)) {
+                                //remove the line
+                                console.log(this.boardArray.splice(j, 1));
+                                this.boardArray.unshift(Array(COLS).fill(0));
+                                debugger;
+                                this.getClearLinePoint();
+                        }
+                })
+        }
+
+        showNextPiece() {
+                this.shapePiece = this.nextPiece;
+                this.shapePiece.ctx = this.ctx;
+                this.shapePiece.setInitialPosition();
+                this.nextPiece = new ShapePiece(this.nextCtx);
+                this.nextCtx.clearRect(0, 0, this.nextCtx.canvas.width, this.nextCtx.canvas.height);
+                this.nextPiece.draw();
+        }
+
+        getClearLinePoint() {
+
+        }
 
 }
 
@@ -270,15 +295,17 @@ function addEventListeners() {
 }
 
 function keyEventHandler(event) {
-        if (event.keyCode === KEYS.SPACE || event.keyCode === KEYS.LEFT || event.keyCode === KEYS.RIGHT) {
-                moveShapeHandler(event.keyCode);
+        event.preventDefault();
+        switch(event.keyCode) {
+                case KEYS.SPACE:
+                case KEYS.LEFT:
+                case KEYS.RIGHT:
+                        moveShapeHandler(event.keyCode);
+                        break;
+
         }
-        // if (event.keyCode === KEYS.SPACE) {       // rotate test
-        //         moveShapeHandler(KEYS.SPACE);
-        // } else if (event.keyCode === KEYS.LEFT) {
-        //         moveShapeHandler(KEYS.LEFT);
-        // } else if (event.keyCode === KEYS.RIGHT) {
-        //         moveShapeHandler(KEYS.RIGHT);
+        // if (event.keyCode === KEYS.SPACE || event.keyCode === KEYS.LEFT || event.keyCode === KEYS.RIGHT) {
+        //         moveShapeHandler(event.keyCode);
         // }
 }
 
@@ -293,7 +320,10 @@ function animate(timestamp) {
         
         if (progress > LEVELS[User.level]) {
                 ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-                gameBoard.setMovePosition(-1); // for saving to boardArray when it hits others
+                if (!gameBoard.setMovePosition(-1)) { // for saving to boardArray when it hits others
+                        gameOver();
+                        return;
+                }
                 gameBoard.draw();
                 lastRender = timestamp;
         }   
@@ -301,8 +331,12 @@ function animate(timestamp) {
         gameBoard.requestId = requestAnimationFrame(animate);
 }
 
+function gameOver() {
+        cancelAnimationFrame(gameBoard.requestId);
+}
+
 let lastRender = 0;
-let gameBoard = new GameBoard(ctx);
+let gameBoard = new GameBoard(ctx, nextCtx);
 gameBoard.draw();
 addEventListeners();
 requestAnimationFrame(animate);
