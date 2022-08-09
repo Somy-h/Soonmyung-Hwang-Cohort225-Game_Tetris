@@ -131,11 +131,13 @@ class ShapePiece {
                 this.shapeId = this.createRandomShape();
                 this.color = COLORS[this.shapeId];
                 this.rotateIdx = 0;
-                console.log(this);
+                //console.log(this);
         }
 
         setInitialPosition() {
-                this.x = COLS/2 - 2; // initial center position
+                // initial center position
+                if (this.shapeId == 1) this.x = COLS/2 - 1; // shape O
+                else this.x = COLS/2 - 2; // other shapes
                 this.y = 0;
         }
 
@@ -154,8 +156,6 @@ class ShapePiece {
                         });
                 });
         }
-        
-        moveHardDrop() {}
 }
 
 
@@ -187,6 +187,7 @@ class GameBoard {
         }
 
         draw() {
+                this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
                 this.drawBoard();
                 this.shapePiece.draw();
         }
@@ -212,23 +213,34 @@ class GameBoard {
 
                 }else if (direction === KEYS.SPACE) {   // rotate
                         testPieceBeforeMove.rotateIdx = ++testPieceBeforeMove.rotateIdx % SHAPES[this.shapePiece.shapeId].length;
-                }else {
+                }else if (direction === KEYS.DOWN) {    // hard down
+                        while (this.isValideMove(testPieceBeforeMove)) {
+                                this.shapePiece.y = testPieceBeforeMove.y;
+                                testPieceBeforeMove.y += 1;
+                        }
+                        return this.processHitBottom();
+                } else {
                         testPieceBeforeMove.y += 1;     // otherwise drop
                 }
-
+                
                 if (this.isValideMove(testPieceBeforeMove)) {
                         this.shapePiece.x = testPieceBeforeMove.x;
                         this.shapePiece.y = testPieceBeforeMove.y;
                         this.shapePiece.rotateIdx = testPieceBeforeMove.rotateIdx;
-                }else if (direction === -1) { // ready for a new peice
-                        this.saveShapeintoBoardArray();
-                        this.checkClearLines();
-                        if (this.shapePiece.y === 0) {
-                                // GAME OVER
-                                return false;
-                        }
-                        this.showNextPiece();
+                }else if (direction === -1) { // ready for a new piece
+                        return this.processHitBottom();
                 }
+                return true;
+        }
+
+        processHitBottom() {
+                this.saveShapeintoBoardArray();
+                this.checkClearLines();
+                if (this.shapePiece.y === 0) {
+                        // GAME OVER
+                        return false;
+                }
+                this.showNextPiece();
                 return true;
         }
 
@@ -267,9 +279,9 @@ class GameBoard {
                 this.boardArray.forEach((row, j) => {
                         if (row.every((col) => col > 0)) {
                                 //remove the line
-                                console.log(this.boardArray.splice(j, 1));
+                                //console.log(this.boardArray.splice(j, 1));
                                 this.boardArray.unshift(Array(COLS).fill(0));
-                                debugger;
+                                //debugger;
                                 this.getClearLinePoint();
                         }
                 })
@@ -294,32 +306,30 @@ function addEventListeners() {
         document.addEventListener('keydown', keyEventHandler);
 }
 
-function keyEventHandler(event) {
-        event.preventDefault();
+// NEXT ****** Using object for lookups
+// change switch to object literal
+function keyEventHandler(event) {       
         switch(event.keyCode) {
                 case KEYS.SPACE:
                 case KEYS.LEFT:
                 case KEYS.RIGHT:
+                case KEYS.DOWN:
                         moveShapeHandler(event.keyCode);
+                        event.preventDefault();
                         break;
-
         }
-        // if (event.keyCode === KEYS.SPACE || event.keyCode === KEYS.LEFT || event.keyCode === KEYS.RIGHT) {
-        //         moveShapeHandler(event.keyCode);
-        // }
 }
 
-function moveShapeHandler(direction) {
-        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+function moveShapeHandler(direction) {        
         gameBoard.setMovePosition(direction);
         gameBoard.draw();
 }
 
+
 function animate(timestamp) {
         let progress = timestamp - lastRender;
         
-        if (progress > LEVELS[User.level]) {
-                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        if (progress > LEVELS[User.level]) { 
                 if (!gameBoard.setMovePosition(-1)) { // for saving to boardArray when it hits others
                         gameOver();
                         return;
@@ -332,7 +342,13 @@ function animate(timestamp) {
 }
 
 function gameOver() {
+        //console.log("game over");
         cancelAnimationFrame(gameBoard.requestId);
+        ctx.fillStyle = 'black';
+        ctx.fillRect(1, 6, 8, 1.4);  //scale * 60(UNIT_SIZE)
+        ctx.font = '1px Arial'
+        ctx.fillStyle = 'red';
+        ctx.fillText('GAME OVER', 2, 7);
 }
 
 let lastRender = 0;
