@@ -16,7 +16,8 @@ const UNIT_SIZE = 60;
 
 const User = {
         level: 0, // level 0 -6
-        score: 0
+        score: 0,
+        lines:0
 };
 
 const SHAPES = [
@@ -103,21 +104,31 @@ const COLORS = [
 // const ROTATE_RIGHT = 0;
 // const ROTATE_LEFT = 1;
 const KEYS = {
-        SPACE: 32,      // rotate
+        SPACE: 32,      // move hard drop
         LEFT: 37,       // move to left
         RIGHT: 39,      // move to right
-        DOWN: 40,       // move hard drop
+        UP: 38,         // rotate
+        DOWN: 40,       // soft drop ?? 
 };
 
 const LEVELS = [
-        700,
+        700, // 700ms
         600,
         500,
         400,
         300,
         200,
-        100
-];
+        100 // 100ms
+]; 
+
+const POINTS = {
+        LINE: 100,
+        DOUBLE: 300,
+        TRIPLE: 500,
+        QUADRUPLE: 800,
+        HARD_DROP: 2,
+        DROP: 1
+};
 
 class ShapePiece {
         constructor(ctx) {
@@ -211,9 +222,9 @@ class GameBoard {
                 }else if (direction === KEYS.RIGHT) {   // move right
                         testPieceBeforeMove.x += 1;
 
-                }else if (direction === KEYS.SPACE) {   // rotate
+                }else if (direction === KEYS.UP) {   // rotate
                         testPieceBeforeMove.rotateIdx = ++testPieceBeforeMove.rotateIdx % SHAPES[this.shapePiece.shapeId].length;
-                }else if (direction === KEYS.DOWN) {    // hard down
+                }else if (direction === KEYS.SPACE) {    // hard down
                         while (this.isValideMove(testPieceBeforeMove)) {
                                 this.shapePiece.y = testPieceBeforeMove.y;
                                 testPieceBeforeMove.y += 1;
@@ -276,15 +287,17 @@ class GameBoard {
                 });
         }
         checkClearLines() {
+                let clearLineNum = 0;
                 this.boardArray.forEach((row, j) => {
                         if (row.every((col) => col > 0)) {
                                 //remove the line
-                                //console.log(this.boardArray.splice(j, 1));
+                                this.boardArray.splice(j, 1);
                                 this.boardArray.unshift(Array(COLS).fill(0));
+                                clearLineNum++;
                                 //debugger;
-                                this.getClearLinePoint();
                         }
-                })
+                });
+                if (clearLineNum > 0) this.setClearLinePoint(clearLineNum);
         }
 
         showNextPiece() {
@@ -296,8 +309,19 @@ class GameBoard {
                 this.nextPiece.draw();
         }
 
-        getClearLinePoint() {
-
+        setClearLinePoint(lines) {
+                switch(lines) {
+                        case 1: User.score += POINTS.LINE;
+                                break;
+                        case 2: User.score +=  POINTS.DOUBLE;
+                                break;
+                        case 3: User.score += POINTS.TRIPLE;
+                                break;
+                        case 4: User.score += POINTS.QUADRUPLE;
+                                break;
+                }
+                User.lines += lines;
+                User.level += (User.lines % 10 === 0) ? 1 : 0; // level up: every 10 lines 
         }
 
 }
@@ -313,7 +337,7 @@ function keyEventHandler(event) {
                 case KEYS.SPACE:
                 case KEYS.LEFT:
                 case KEYS.RIGHT:
-                case KEYS.DOWN:
+                case KEYS.UP:
                         moveShapeHandler(event.keyCode);
                         event.preventDefault();
                         break;
@@ -335,6 +359,7 @@ function animate(timestamp) {
                         return;
                 }
                 gameBoard.draw();
+                updateGameInfo();
                 lastRender = timestamp;
         }   
         
@@ -349,6 +374,12 @@ function gameOver() {
         ctx.font = '1px Arial'
         ctx.fillStyle = 'red';
         ctx.fillText('GAME OVER', 2, 7);
+}
+
+function updateGameInfo() {
+        document.getElementById('game-level').innerText = User.level;
+        document.getElementById('game-score').innerText = User.score;
+        document.getElementById('total-lines').innerText = User.lines;
 }
 
 let lastRender = 0;
