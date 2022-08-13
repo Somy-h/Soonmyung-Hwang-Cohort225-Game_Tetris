@@ -11,8 +11,9 @@ const ctx = canvas.getContext('2d');
 const nextCtx = nextCanvas.getContext('2d');
 
 const COLS = 10;
-const ROWS = 15;
-const UNIT_SIZE = 60;
+const ROWS = 18;
+//const UNIT_SIZE = 50; // commented because of interactive size
+
 
 const User = {
         level: 0, // level 0 -6
@@ -178,12 +179,15 @@ class GameBoard {
         } 
 
         init() {
-                this.ctx.canvas.width = COLS * UNIT_SIZE;
-                this.ctx.canvas.height = ROWS * UNIT_SIZE;
-                this.nextCtx.canvas.width = UNIT_SIZE * 4;
-                this.nextCtx.canvas.height = UNIT_SIZE * 4;
-                this.ctx.scale(UNIT_SIZE, UNIT_SIZE);
-                this.nextCtx.scale(UNIT_SIZE, UNIT_SIZE);
+                // this.ctx.canvas.width = COLS * UNIT_SIZE;
+                // this.ctx.canvas.height = ROWS * UNIT_SIZE;
+                // //this.nextCtx.canvas.width = UNIT_SIZE * 4;
+                // //this.nextCtx.canvas.height = UNIT_SIZE * 4;
+                // this.ctx.scale(UNIT_SIZE, UNIT_SIZE);
+                // this.nextCtx.scale(UNIT_SIZE, UNIT_SIZE);
+                
+                this.reSizeBoard();
+                
                 this.requestId = -1; 
                 this.shapePiece = new ShapePiece(this.ctx);
                 this.shapePiece.setInitialPosition();
@@ -212,6 +216,17 @@ class GameBoard {
                                 }
                         }
                 }
+        }
+
+        reSizeBoard() {
+                const windowWidth = (window.innerWidth > 992) ? 992 : window.innerWidth;
+                const windowHeight = window.innerHeight;
+                const mainGameWidth = windowWidth * 0.62; // 60% of the window width
+                const unitSize = Math.min(Math.floor(mainGameWidth/COLS), Math.floor(windowHeight*0.96/ROWS));
+                this.ctx.canvas.width = COLS * unitSize;
+                this.ctx.canvas.height = ROWS * unitSize;
+                this.ctx.scale(unitSize, unitSize);
+                this.nextCtx.scale(unitSize, unitSize);
         }
 
         setMovePosition(direction) {
@@ -328,6 +343,12 @@ class GameBoard {
 
 function addEventListeners() {
         document.addEventListener('keydown', keyEventHandler);
+        window.addEventListener('resize', resizeEventHandler);
+}
+
+function resizeEventHandler(event) {
+        gameBoard.reSizeBoard();
+        gameBoard.draw();
 }
 
 // NEXT ****** Using object for lookups
