@@ -16,9 +16,9 @@ const ROWS = 18;
 
 
 const User = {
-        level: 0, // level 0 -6
+        level: 0, // level 0-9 : display 1-10
         score: 0,
-        lines:0
+        lines: 0   // # of lines cleared      
 };
 
 const SHAPES = [
@@ -33,14 +33,26 @@ const SHAPES = [
           [0, 0, 0]], 
          [[0, 2, 0],    // SHAPE_S
           [0, 2, 2], 
-          [0, 0, 2]]],        
+          [0, 0, 2]],
+         [[0, 0, 0],    // SHAPE_S
+          [0, 2, 2], 
+          [2, 2, 0]],
+         [[2, 0, 0],    // SHAPE_S
+          [2, 2, 0], 
+          [0, 2, 0]]],        
         
         [[[3, 3, 0],     // SHAPE_Z
           [0, 3, 3], 
           [0, 0, 0]],
          [[0, 0, 3],    // SHAPE_Z 
           [0, 3, 3], 
-          [0, 3, 0]]],  
+          [0, 3, 0]],
+         [[0, 0, 0],    // SHAPE_Z 
+          [3, 3, 0], 
+          [0, 3, 3]],
+         [[0, 3, 0],    // SHAPE_Z 
+          [3, 3, 0], 
+          [3, 0, 0]]],  
         
         [[[4, 0, 0],     // SHAPE_J
           [4, 4, 4], 
@@ -118,9 +130,14 @@ const LEVELS = [
         500,
         400,
         300,
+        250,
         200,
-        100 // 100ms
-]; 
+        150,
+        100,
+        70      // level 10 
+];
+
+const LEVEL_LINES = 15; // level up every 15 lines cleared
 
 const POINTS = {
         LINE: 100,
@@ -178,14 +195,7 @@ class GameBoard {
                 this.init();
         } 
 
-        init() {
-                // this.ctx.canvas.width = COLS * UNIT_SIZE;
-                // this.ctx.canvas.height = ROWS * UNIT_SIZE;
-                // //this.nextCtx.canvas.width = UNIT_SIZE * 4;
-                // //this.nextCtx.canvas.height = UNIT_SIZE * 4;
-                // this.ctx.scale(UNIT_SIZE, UNIT_SIZE);
-                // this.nextCtx.scale(UNIT_SIZE, UNIT_SIZE);
-                
+        init() {                
                 this.reSizeBoard();
                 
                 this.requestId = -1; 
@@ -194,6 +204,11 @@ class GameBoard {
                 this.nextPiece = new ShapePiece(this.nextCtx);
                 this.boardArray = this.initBoard();
                 this.nextPiece.draw();
+                
+                // User initialization
+                User.level = 0;
+                User.lines = 0;
+                User.score = 0;
         }
 
         initBoard() {  // setting [rows][cols] = 0
@@ -225,10 +240,13 @@ class GameBoard {
                 const unitSize = Math.min(Math.floor(mainGameWidth/COLS), Math.floor(windowHeight*0.96/ROWS));
                 this.ctx.canvas.width = COLS * unitSize;
                 this.ctx.canvas.height = ROWS * unitSize;
+                this.nextCtx.canvas.width = 4 * unitSize;
+                this.nextCtx.canvas.height = 4 * unitSize;
                 this.ctx.scale(unitSize, unitSize);
                 this.nextCtx.scale(unitSize, unitSize);
+                this.nextCtx.clearRect(0, 0, this.nextCtx.canvas.width, this.nextCtx.canvas.height); 
         }
-
+ 
         setMovePosition(direction) {
                 let testPieceBeforeMove = {...this.shapePiece};
                 if (direction === KEYS.LEFT) {  // move left
@@ -336,7 +354,8 @@ class GameBoard {
                                 break;
                 }
                 User.lines += lines;
-                User.level += (User.lines % 10 === 0) ? 1 : 0; // level up: every 10 lines 
+                User.level = Math.floor(User.lines / LEVEL_LINES); // level up: every 15 lines 
+                User.level = (Math.floor(User.lines / LEVEL_LINES) >= LEVELS.length) ? LEVELS.length : User.level;
         }
 
 }
@@ -344,25 +363,41 @@ class GameBoard {
 function addEventListeners() {
         document.addEventListener('keydown', keyEventHandler);
         window.addEventListener('resize', resizeEventHandler);
+        document.getElementById('btn-restart').addEventListener('click', restartEventHandler);
 }
 
 function resizeEventHandler(event) {
         gameBoard.reSizeBoard();
+        gameBoard.nextPiece.draw();
         gameBoard.draw();
+        if (gameBoard.requestId === -1) {       //display gameover
+                gameOver(); 
+        }
 }
 
 // NEXT ****** Using object for lookups
 // change switch to object literal
-function keyEventHandler(event) {       
-        switch(event.keyCode) {
-                case KEYS.SPACE:
-                case KEYS.LEFT:
-                case KEYS.RIGHT:
-                case KEYS.UP:
-                        moveShapeHandler(event.keyCode);
-                        event.preventDefault();
-                        break;
+function keyEventHandler(event) {  
+        if (gameBoard.requestId > -1) {         // If not "Game Over"  
+                switch(event.keyCode) {
+                        case KEYS.SPACE:
+                        case KEYS.LEFT:
+                        case KEYS.RIGHT:
+                        case KEYS.UP:
+                                moveShapeHandler(event.keyCode);
+                                event.preventDefault();
+                                break;
+                }
         }
+}
+
+function restartEventHandler(event) {
+        console.log("restarting");
+        gameBoard.init();
+        gameBoard.initBoard();
+        gameBoard.draw();
+        lastRender = 0;
+        requestAnimationFrame(animate);
 }
 
 function moveShapeHandler(direction) {        
@@ -390,6 +425,7 @@ function animate(timestamp) {
 function gameOver() {
         //console.log("game over");
         cancelAnimationFrame(gameBoard.requestId);
+        gameBoard.requestId = -1; // initialize for checking gameOver
         ctx.fillStyle = 'black';
         ctx.fillRect(1, 6, 8, 1.4);  //scale * 60(UNIT_SIZE)
         ctx.font = '1px Arial'
@@ -398,13 +434,19 @@ function gameOver() {
 }
 
 function updateGameInfo() {
-        document.getElementById('game-level').innerText = User.level;
+        document.getElementById('game-level').innerText = User.level + 1;
         document.getElementById('game-score').innerText = User.score;
         document.getElementById('total-lines').innerText = User.lines;
 }
 
-let lastRender = 0;
-let gameBoard = new GameBoard(ctx, nextCtx);
-gameBoard.draw();
-addEventListeners();
-requestAnimationFrame(animate);
+let lastRender;
+let gameBoard;
+startGame();
+function startGame() {
+        lastRender = 0;
+        gameBoard = new GameBoard(ctx, nextCtx);
+        gameBoard.draw();
+        addEventListeners();
+        requestAnimationFrame(animate);
+}
+

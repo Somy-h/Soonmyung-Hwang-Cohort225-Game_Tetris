@@ -10,8 +10,8 @@ body {
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    min-width: 400px;
-    max-width: 992px;
+    min-width: 380px;
+    max-width: 768px;
 }
 
 .game-container {
@@ -42,10 +42,19 @@ body {
     display: flex;
     flex-direction: column;
     margin: 2rem;
-    width: 35%;
+    width: 30%;
 }
 
 .game-info {
     font-size: 1rem;
+}
+
+.btn {
+    border-radius: 1rem;
+    background-color: black;
+    color: white;
+    padding: 0.6rem;
+    font-family: inherit;
+    font-size: 1.2rem;
 }
 
