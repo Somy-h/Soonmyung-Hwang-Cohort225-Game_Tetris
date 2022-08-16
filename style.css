@@ -40,25 +40,48 @@ body {
     font-size: 1rem;
 }
 
-.game-info-container {
+.game-right-container {
     display: flex;
     flex-direction: column;
     margin: 2rem;
-    width: 30%;
+    width: 35%;
+}
+
+.game-info-container {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
 }
 
 .game-info {
     font-size: 1rem;
     font-weight: bold;
+    margin: 0.2rem 0;
+}
+
+.game-control-container {
+    margin-top: 2rem;
+    width: 100%;
 }
 
 .btn {
-    border-radius: 1rem;
+    border-radius: 0.5rem;
     background-color: rgba(0, 0, 0, 0.1);
     color: black;
-    padding: 0.6rem;
+    padding: 0.4rem 0.4rem;
     font-family: inherit;
-    font-size: 1.2rem;
+    font-size: 1rem;
+    margin: 0.2rem;
+}
+
+.btn.control {
+    background-color: rgb(200, 200, 251);
+    font-size: 0.9rem;
+}
+
+.btn.drop {
+    background-color: rgb(249, 213, 200);
+    font-size: 0.9rem;
 }
 
 .btn:hover {

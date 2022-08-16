@@ -14,13 +14,22 @@
             <small class="game-help">
                 Spacebar: drop, UP: rotation</small>
         </div>
-        <div class="game-info-container">
-            <p class="game-info">Next Shape</p>
-            <canvas id="next-shape" class="next-shape"></canvas>
-            <p class="game-info">Level: <span id="game-level"></span></p>
-            <p class="game-info">Score: <span id="game-score"></span></p>
-            <p class="game-info">Lines: <span id="total-lines"></span></p>
-            <button id="btn-restart" type="button" class="btn">Restart</button>
+        <div class="game-right-container">
+            <div class="game-info-container">
+                <p class="game-info">Next Shape</p>
+                <canvas id="next-shape" class="next-shape"></canvas>
+                <p class="game-info">Level: <span id="game-level"></span></p>
+                <p class="game-info">Score: <span id="game-score"></span></p>
+                <p class="game-info">Lines: <span id="total-lines"></span></p>
+                <button id="btn-restart" type="button" class="btn">Restart</button>
+            </div>
+            
+            <div class="game-control-container">
+                <button id="btn-left" type="button" class="btn control">Left</button>
+                <button id="btn-up" type="button" class="btn control">Rotate</button>
+                <button id="btn-right" type="button" class="btn control">Right</button>
+                <button id="btn-hard-drop" type="button" class="btn drop">Hard Drop</button>
+            </div>
         </div>
     </div>
     

@@ -373,6 +373,20 @@ function addEventListeners() {
         document.addEventListener('keydown', keyEventHandler);
         window.addEventListener('resize', resizeEventHandler);
         document.getElementById('btn-restart').addEventListener('click', restartEventHandler);
+
+// Able to play without keyboard
+        document.getElementById('btn-left').addEventListener('click', () => {
+                if (gameBoard.requestId !== -1) moveShapeHandler(KEYS.LEFT)
+        });
+        document.getElementById('btn-up').addEventListener('click', () => {
+                if (gameBoard.requestId !== -1) moveShapeHandler(KEYS.UP)
+        });
+        document.getElementById('btn-right').addEventListener('click', () => {
+                if (gameBoard.requestId !== -1) moveShapeHandler(KEYS.RIGHT)
+        });
+        document.getElementById('btn-hard-drop').addEventListener('click', () =>{
+                if (gameBoard.requestId !== -1) moveShapeHandler(KEYS.SPACE)
+        });
 }
 
 function resizeEventHandler(event) {
