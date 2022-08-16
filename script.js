@@ -374,7 +374,7 @@ function addEventListeners() {
         window.addEventListener('resize', resizeEventHandler);
         document.getElementById('btn-restart').addEventListener('click', restartEventHandler);
 
-// Able to play without keyboard
+        // Able to play without keyboard
         document.getElementById('btn-left').addEventListener('click', () => {
                 if (gameBoard.requestId !== -1) moveShapeHandler(KEYS.LEFT)
         });
