@@ -121,7 +121,7 @@ const KEYS = {
         LEFT: 37,       // move to left
         RIGHT: 39,      // move to right
         UP: 38,         // rotate
-        DOWN: 40,       // soft drop ?? 
+        DOWN: 40,       // soft drop
 };
 
 const LEVELS = [
@@ -175,15 +175,22 @@ class ShapePiece {
         }
 
         draw() {
-                this.ctx.fillStyle = this.color;
+                
                 
                 SHAPES[this.shapeId][this.rotateIdx].forEach ((row, i) => {
                         row.forEach ((col, j) => {
                                 if (col > 0) {
+                                        this.drawBorder(this.x + j, this.y + i, 1, 1);
+                                        this.ctx.fillStyle = this.color;
                                         this.ctx.fillRect(this.x + j, this.y + i, 1, 1); 
                                 }
                         });
                 });
+        }
+        drawBorder(x, y, width, height, thickness = 0.01)
+        {
+                this.ctx.fillStyle='#000';
+                this.ctx.fillRect(x - (thickness), y - (thickness), width + (thickness * 2), height + (thickness * 2));
         }
 }
 
@@ -226,6 +233,7 @@ class GameBoard {
                 for (let i = 0; i < ROWS; i++) {
                         for (let j = 0;  j < COLS; j++) {
                                 if (this.boardArray[i][j] > 0) {
+                                        this.shapePiece.drawBorder(j, i, 1, 1); 
                                         this.ctx.fillStyle = COLORS[this.boardArray[i][j]];
                                         this.ctx.fillRect(j, i, 1, 1);
                                 }
@@ -251,13 +259,14 @@ class GameBoard {
                 let testPieceBeforeMove = {...this.shapePiece};
                 if (direction === KEYS.LEFT) {  // move left
                         testPieceBeforeMove.x -= 1;
-
-                }else if (direction === KEYS.RIGHT) {   // move right
+                } else if (direction === KEYS.RIGHT) {   // move right
                         testPieceBeforeMove.x += 1;
-
-                }else if (direction === KEYS.UP) {   // rotate
+                } else if (direction === KEYS.UP) {   // rotate
                         testPieceBeforeMove.rotateIdx = ++testPieceBeforeMove.rotateIdx % SHAPES[this.shapePiece.shapeId].length;
-                }else if (direction === KEYS.SPACE) {    // hard down
+                } else if (direction === KEYS.DOWN) { // soft down
+                        testPieceBeforeMove.y += 1;
+
+                } else if (direction === KEYS.SPACE) {    // hard down
                         while (this.isValideMove(testPieceBeforeMove)) {
                                 this.shapePiece.y = testPieceBeforeMove.y;
                                 testPieceBeforeMove.y += 1;
@@ -384,6 +393,7 @@ function keyEventHandler(event) {
                         case KEYS.LEFT:
                         case KEYS.RIGHT:
                         case KEYS.UP:
+                        case KEYS.DOWN:
                                 moveShapeHandler(event.keyCode);
                                 event.preventDefault();
                                 break;
