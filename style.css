@@ -54,10 +54,19 @@ body {
 
 .btn {
     border-radius: 1rem;
-    background-color: black;
-    color: white;
+    background-color: rgba(0, 0, 0, 0.1);
+    color: black;
     padding: 0.6rem;
     font-family: inherit;
     font-size: 1.2rem;
+}
+
+.btn:hover {
+    background-color: black;
+    color: white;
+}
+
+.btn:active {
+    transform: scale(0.92);
 }
 
