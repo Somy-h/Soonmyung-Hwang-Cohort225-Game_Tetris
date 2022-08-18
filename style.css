@@ -13,7 +13,7 @@ body {
     align-items: center;
     overflow: hidden;
     min-width: 380px;
-    max-width: 768px;
+    max-width: 992px;
 }
 
 .game-container {
@@ -61,7 +61,7 @@ body {
 
 .game-control-container {
     margin-top: 2rem;
-    width: 100%;
+    width: 90%;
 }
 
 .btn {
