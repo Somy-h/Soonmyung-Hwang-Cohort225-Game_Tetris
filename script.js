@@ -21,6 +21,14 @@ const User = {
         lines: 0   // # of lines cleared      
 };
 
+const STATE = {
+        start: 0,
+        restart: 1,
+        pause: 2,
+        stop: 3,
+        gameOver: 4
+};
+
 const SHAPES = [
         [],
         [[[1, 1],        // SHAPE_O
@@ -174,9 +182,7 @@ class ShapePiece {
                 return Math.floor(Math.random() * (COLORS.length - 1) + 1);
         }
 
-        draw() {
-                
-                
+        draw() {         
                 SHAPES[this.shapeId][this.rotateIdx].forEach ((row, i) => {
                         row.forEach ((col, j) => {
                                 if (col > 0) {
@@ -187,9 +193,10 @@ class ShapePiece {
                         });
                 });
         }
+
         drawBorder(x, y, width, height, thickness = 0.01)
         {
-                this.ctx.fillStyle='#000';
+                this.ctx.fillStyle='#fff';
                 this.ctx.fillRect(x - (thickness), y - (thickness), width + (thickness * 2), height + (thickness * 2));
         }
 }
@@ -244,10 +251,10 @@ class GameBoard {
         reSizeBoard() {
                 const windowWidth = (window.innerWidth > 992) ? 992 : window.innerWidth;
                 const windowHeight = window.innerHeight;
-                const mainGameWidth = windowWidth * 0.62; // 60% of the window width
-                const unitSize = Math.min(Math.floor(mainGameWidth/COLS), Math.floor(windowHeight*0.96/ROWS));
+                const mainGameWidth = windowWidth * 0.62; // 62% of the window width
+                const unitSize = Math.min(Math.floor(mainGameWidth/COLS), Math.floor(windowHeight*0.95/ROWS));
                 this.ctx.canvas.width = COLS * unitSize;
-                this.ctx.canvas.height = ROWS * unitSize;
+                this.ctx.canvas.height = ROWS * unitSize;           
                 this.nextCtx.canvas.width = 4 * unitSize;
                 this.nextCtx.canvas.height = 4 * unitSize;
                 this.ctx.scale(unitSize, unitSize);
@@ -309,7 +316,6 @@ class GameBoard {
                 });     
         }
 
-
         isInsideGameBoard(x, y) {
                 return x >= 0 && x < COLS && y <= ROWS;
         }
@@ -328,6 +334,7 @@ class GameBoard {
                         });
                 });
         }
+
         checkClearLines() {
                 let clearLineNum = 0;
                 this.boardArray.forEach((row, j) => {
@@ -366,26 +373,58 @@ class GameBoard {
                 User.level = Math.floor(User.lines / LEVEL_LINES); // level up: every 15 lines 
                 User.level = (Math.floor(User.lines / LEVEL_LINES) >= LEVELS.length) ? LEVELS.length : User.level;
         }
-
 }
 
+let lastRender;
+let gameBoard;
 function addEventListeners() {
         document.addEventListener('keydown', keyEventHandler);
         window.addEventListener('resize', resizeEventHandler);
-        document.getElementById('btn-restart').addEventListener('click', restartEventHandler);
+        document.getElementById('btn-restart')?.addEventListener('click', restartEventHandler);
 
         // Able to play without keyboard
-        document.getElementById('btn-left').addEventListener('click', () => {
-                if (gameBoard.requestId !== -1) moveShapeHandler(KEYS.LEFT)
-        });
-        document.getElementById('btn-up').addEventListener('click', () => {
-                if (gameBoard.requestId !== -1) moveShapeHandler(KEYS.UP)
-        });
-        document.getElementById('btn-right').addEventListener('click', () => {
-                if (gameBoard.requestId !== -1) moveShapeHandler(KEYS.RIGHT)
-        });
-        document.getElementById('btn-hard-drop').addEventListener('click', () =>{
-                if (gameBoard.requestId !== -1) moveShapeHandler(KEYS.SPACE)
+        // document.getElementById('btn-left').addEventListener('click', () => {
+        //         if (gameBoard.requestId !== -1) moveShapeHandler(KEYS.LEFT)
+        // });
+        // document.getElementById('btn-up').addEventListener('click', () => {
+        //         if (gameBoard.requestId !== -1) moveShapeHandler(KEYS.UP)
+        // });
+        // document.getElementById('btn-right').addEventListener('click', () => {
+        //         if (gameBoard.requestId !== -1) moveShapeHandler(KEYS.RIGHT)
+        // });
+        // document.getElementById('btn-hard-drop').addEventListener('click', () =>{
+        //         if (gameBoard.requestId !== -1) moveShapeHandler(KEYS.SPACE)
+        // });
+
+        document.querySelector('.game-control-container')?.addEventListener('click', (event) => {
+                let controlId;
+                if (event.target.className == 'controlBtn') {
+                        controlId = event.target.id;
+                } else if (event.target.closest('.controlBtn')) {
+                        controlId = event.target.closest('.controlBtn').id;
+                } else {
+                        return;
+                }
+                if (gameBoard.requestId !== -1) {
+                        switch (controlId) {
+                                case 'btn-left' :
+                                        moveShapeHandler(KEYS.LEFT);
+                                        break;
+                                case 'btn-up' :
+                                        moveShapeHandler(KEYS.UP);
+                                        break;
+                                case 'btn-right' :
+                                        moveShapeHandler(KEYS.RIGHT);
+                                        break;
+                                case 'btn-hard-drop' :
+                                        moveShapeHandler(KEYS.SPACE);
+                                        break;
+                                case 'btn-soft-drop' :
+                                        moveShapeHandler(KEYS.DOWN);
+                                        break;
+                        }
+                }
+                event.preventDefault();
         });
 }
 
@@ -393,7 +432,7 @@ function resizeEventHandler(event) {
         gameBoard.reSizeBoard();
         gameBoard.nextPiece.draw();
         gameBoard.draw();
-        if (gameBoard.requestId === -1) {       //display gameover
+        if (gameBoard.requestId === -1) {       //display game over
                 gameOver(); 
         }
 }
@@ -416,7 +455,6 @@ function keyEventHandler(event) {
 }
 
 function restartEventHandler(event) {
-        console.log("restarting");
         gameBoard.init();
         gameBoard.initBoard();
         gameBoard.draw();
@@ -428,7 +466,6 @@ function moveShapeHandler(direction) {
         gameBoard.setMovePosition(direction);
         gameBoard.draw();
 }
-
 
 function animate(timestamp) {
         let progress = timestamp - lastRender;
@@ -463,9 +500,6 @@ function updateGameInfo() {
         document.getElementById('total-lines').innerText = User.lines;
 }
 
-let lastRender;
-let gameBoard;
-startGame();
 function startGame() {
         lastRender = 0;
         gameBoard = new GameBoard(ctx, nextCtx);
@@ -474,3 +508,4 @@ function startGame() {
         requestAnimationFrame(animate);
 }
 
+startGame();
