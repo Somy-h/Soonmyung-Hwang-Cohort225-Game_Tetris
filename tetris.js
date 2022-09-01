@@ -3,27 +3,15 @@ Referenced: Michael Karen's Tetris game
 https://github.com/melcor76/js-tetris.git
 */
 
-import {
-  "tetis-config" as config
-} from './config.js';
-
-
-
-import {
-  GameBoard
-} from './gameBoard.js';
+import { "tetis-config" as config } from './config.js';
+import { "user-info" as user } from './user.js';
+import { GameBoard } from './gameBoard.js';
 
 const canvas = document.getElementById('game-board');
 const nextCanvas = document.getElementById('next-shape');
 const ctx = canvas.getContext('2d');
 const nextCtx = nextCanvas.getContext('2d');
 
-
-const User = {
-  level: 0, // level 0-9 : display 1-10
-  score: 0,
-  lines: 0   // # of lines cleared      
-};
 
 let lastRender;
 let gameBoard;
@@ -106,7 +94,7 @@ function moveShapeHandler(direction) {
 function animate(timestamp) {
   let progress = timestamp - lastRender;
   
-  if (progress > config.levels[User.level]) { 
+  if (progress > config.levels[user.level]) { 
     if (!gameBoard.setMovePosition(-1)) { // for saving to boardArray when it hits others
             gameOver();
             return;
@@ -131,9 +119,9 @@ function gameOver() {
 }
 
 function updateGameInfo() {
-  document.getElementById('game-level').innerText = User.level + 1;
-  document.getElementById('game-score').innerText = User.score;
-  document.getElementById('total-lines').innerText = User.lines;
+  document.getElementById('game-level').innerText = user.level + 1;
+  document.getElementById('game-score').innerText = user.score;
+  document.getElementById('total-lines').innerText = user.lines;
 }
 
 function startGame() {
@@ -146,9 +134,9 @@ function startGame() {
 }
 
 function initUser() {
-  User.level = 0;
-  User.lines = 0;
-  User.score = 0;
+  user.level = 0;
+  user.lines = 0;
+  user.score = 0;
 }
 
 startGame();

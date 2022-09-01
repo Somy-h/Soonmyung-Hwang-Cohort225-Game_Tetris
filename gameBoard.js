@@ -1,14 +1,7 @@
-import {
-  "tetis-config" as config
-} from './config.js';
-
-import {
-  Piece
-} from './piece.js';
-
-import {
-  "peices-info" as shapes
-} from './shapes.js';
+import { "tetis-config" as config } from './config.js';
+import { "user-info" as user } from './user.js';
+import { Piece } from './piece.js';
+import { "peices-info" as shapes } from './shapes.js';
 
 
 export class GameBoard {
@@ -142,13 +135,13 @@ export class GameBoard {
   checkClearLines() {
     let clearLineNum = 0;
     this.boardArray.forEach((row, j) => {
-            if (row.every((col) => col > 0)) {
-                    //remove the line
-                    this.boardArray.splice(j, 1);
-                    this.boardArray.unshift(Array(config.cols).fill(0));
-                    clearLineNum++;
-                    //debugger;
-            }
+      if (row.every((col) => col > 0)) {
+        //remove the line
+        this.boardArray.splice(j, 1);
+        this.boardArray.unshift(Array(config.cols).fill(0));
+        clearLineNum++;
+        //debugger;
+      }
     });
     if (clearLineNum > 0) {
       this.setClearLinePoint(clearLineNum);
@@ -166,17 +159,17 @@ export class GameBoard {
 
   setClearLinePoint(lines) {
     switch(lines) {
-      case 1: User.score += config.points.LINE;
+      case 1: user.score += config.points.LINE;
         break;
-      case 2: User.score +=  config.points.DOUBLE;
+      case 2: user.score +=  config.points.DOUBLE;
         break;
-      case 3: User.score += config.points.TRIPLE;
+      case 3: user.score += config.points.TRIPLE;
         break;
-      case 4: User.score += config.points.QUADRUPLE;
+      case 4: user.score += config.points.QUADRUPLE;
         break;
     }
-    User.lines += lines;
-    User.level = Math.floor(User.lines / config.levelUpLineNumbers); // level up: every 15 lines 
-    User.level = (Math.floor(User.lines / config.levelUpLineNumbers) >= config.levels.length) ? config.levels.length : User.level;
+    user.lines += lines;
+    user.level = Math.floor(user.lines / config.levelUpLineNumbers); // level up: every 15 lines 
+    user.level = (Math.floor(user.lines / config.levelUpLineNumbers) >= config.levels.length) ? config.levels.length : user.level;
   }
 }
