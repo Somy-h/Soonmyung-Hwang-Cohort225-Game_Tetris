@@ -53,7 +53,7 @@ function addEventListeners() {
 }
 
 function resizeEventHandler(event) {
-  gameBoard.reSizeBoard();
+  gameBoard.resize();
   gameBoard.nextPiece.draw();
   gameBoard.draw();
   if (gameBoard.requestId === -1) {       //display game over

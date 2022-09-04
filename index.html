@@ -15,17 +15,22 @@
     <div class="tetris">
         <div class="game-container">
             <div class="main-game-container">
-                <canvas id="game-board" class="game-board"></canvas>
-                <small class="game-help">
-                    SPARCEBAR: drop,  UP: rotation</small>
+                <div class="game-board-border">
+                    <canvas id="game-board" class="game-board"></canvas>
+                </div>
+                <small class="game-help">SPARCEBAR: drop,  UP: rotation</small>
             </div>
             <div class="game-info-container">
-                <p class="game-info">Next Shape</p>
-                <canvas id="next-shape" class="next-shape"></canvas>
-                <p class="game-info">Level: <span id="game-level"></span></p>
-                <p class="game-info">Score: <span id="game-score"></span></p>
-                <p class="game-info">Lines: <span id="total-lines"></span></p>
-                <button id="btn-restart" type="button" class="btn">Restart</button>
+                <div class="next-piece-border">
+                    <p class="game-info">Next Shape</p>
+                    <canvas id="next-shape" class="next-shape"></canvas>
+                </div>
+                <div>
+                    <p class="game-info">Level: <span id="game-level"></span></p>
+                    <p class="game-info">Score: <span id="game-score"></span></p>
+                    <p class="game-info">Lines: <span id="total-lines"></span></p>
+                    <button id="btn-restart" type="button" class="btn">Restart</button>
+                </div>
             </div>
         </div>
         <div class="game-control-container">

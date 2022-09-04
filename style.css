@@ -1,14 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap');
 
 * {
     box-sizing: border-box;
+    outline: 0;
+    margin: 0;
+    padding: 0;    
 }
 
+
 body {
-    height: 100vh;
+    background-image: linear-gradient(to right top, #d16ba5, #c777b9, #ba83ca, #aa8fd8, #9a9ae1, #8aa7ec, #79b3f4, #69bff8, #52cffe, #41dfff, #46eefa, #5ffbf1);;
     font-family: 'Orbitron', sans-serif;
     margin: 0 auto;
     display: flex;
+    height: 100vh;
     justify-content: center;
     align-items: center;
     overflow: hidden;
@@ -19,6 +25,7 @@ body {
 .game-container {
     display: flex;
     justify-items: center;
+    align-items: center;
     width : 100%;
 }
 
@@ -27,12 +34,18 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 70%;
+    width: 65%;
+}
+
+.game-board-border {
+    border: 2rem solid rgba(250, 44, 212, 0.6);
+    border-radius: 1rem;
 }
 
 .game-board {
-    border: 2px solid;
-    background-color: #3e3e3e;
+    background-color:#4d2f85; 
+    width: 100%;
+    height: 100%;
 }
 
 .game-help {
@@ -44,11 +57,44 @@ body {
     flex-direction: column;
     width: 30%;
     margin-left: 0.5rem;
+    height: 80%;
+}
+
+.next-piece-border {
+    border: 1rem solid rgba(95, 66, 226, 0.6);
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 0.5rem;
+}
+
+#next-shape {
+    margin-top: 1rem;
+    width: 80%;
 }
 
 .game-info {
-    font-size: 1rem;
-    font-weight: bold;
+    font-size: 1.2rem;
+    /* font-weight: bold; */
+    /* line-height: 2rem; */
+}
+
+#game-level {
+    color: rgb(135, 2, 2);
+    font-size: 3rem;
+    font-weight: 900;
+}
+#game-score {
+    color: rgb(23, 1, 107);
+    font-size: 3rem;
+    font-weight: 900;
+}
+#total-lines {
+    color: rgb(1, 74, 8);
+    font-size: 3rem;
+    font-weight: 900;
 }
 
 .btn {

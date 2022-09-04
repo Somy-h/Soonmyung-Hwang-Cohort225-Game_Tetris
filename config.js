@@ -1,3 +1,5 @@
+export { config as "tetis-config"};
+
 const config = {
   cols: 10,
   rows: 18,
@@ -13,13 +15,13 @@ const config = {
 
   colors: [
     '',
-    'yellowgreen',
-    'hotpink',
-    'blueviolet',
-    'orange',
-    'darkturquoise',
-    'gold',
-    'red'
+    '#9acd32',  //yellowgreen,
+    '#EA3CD9',  //hotpink,
+    '#A936F6',  //darkslateblue
+    '#E4A124',  //orange,
+    '#2AA6CF',  //deepskyblue,
+    '#E9D44D',  //gold,
+    '#EC2525',  //red
   ],
   
   levels: [
@@ -45,4 +47,3 @@ const config = {
   },
 
 }
-export { config as "tetis-config"};

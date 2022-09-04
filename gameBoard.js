@@ -1,5 +1,6 @@
 import { "tetis-config" as config } from './config.js';
 import { "user-info" as user } from './user.js';
+import { Block } from './block.js';
 import { Piece } from './piece.js';
 import { "peices-info" as shapes } from './shapes.js';
 
@@ -12,7 +13,7 @@ export class GameBoard {
   } 
 
   init() {                
-    this.reSizeBoard();
+    this.resize();
     
     this.requestId = -1; 
     this.shapePiece = new Piece(this.ctx);
@@ -37,15 +38,16 @@ export class GameBoard {
     for (let i = 0; i < config.rows; i++) {
       for (let j = 0;  j < config.cols; j++) {
         if (this.boardArray[i][j] > 0) {
-          this.shapePiece.drawBorder(j, i, 1, 1); 
-          this.ctx.fillStyle = config.colors[this.boardArray[i][j]];
-          this.ctx.fillRect(j, i, 1, 1);
+          // this.shapePiece.drawBorder(j, i, 1, 1); 
+          // this.ctx.fillStyle = config.colors[this.boardArray[i][j]];
+          // this.ctx.fillRect(j, i, 1, 1);
+          new Block().draw(this.ctx, j, i, config.colors[this.boardArray[i][j]])
         }
       }
     }
   }
 
-  reSizeBoard() {
+  resize() {
     const windowWidth = (window.innerWidth > 992) ? 992 : window.innerWidth;
     const windowHeight = window.innerHeight;
     const mainGameWidth = windowWidth * 0.62; // 62% of the window width
