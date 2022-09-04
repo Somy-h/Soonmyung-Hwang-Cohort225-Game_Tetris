@@ -40,6 +40,7 @@ body {
 .game-board-border {
     border: 2rem solid rgba(250, 44, 212, 0.6);
     border-radius: 1rem;
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
 }
 
 .game-board {
@@ -68,6 +69,7 @@ body {
     align-items: center;
     justify-content: center;
     padding-top: 0.5rem;
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
 }
 
 #next-shape {
@@ -77,8 +79,6 @@ body {
 
 .game-info {
     font-size: 1.2rem;
-    /* font-weight: bold; */
-    /* line-height: 2rem; */
 }
 
 #game-level {
@@ -138,6 +138,14 @@ body {
         align-items: center;
     }
 
+    /* .game-container {
+        display:flex;
+        flex-direction: column-reverse;
+        justify-items: center;
+        align-items: center;
+        width: 100%;
+    } */
+
     .game-help {
         display: none;
     }
@@ -145,9 +153,36 @@ body {
         font-size: 0.9rem;
     }
 
+    /* .game-info-container {
+        width: 90%;
+        padding : 0.4rem;
+    } */
+
+    .game-board-border {
+        border: 0.5rem solid rgba(250, 44, 212, 0.6);
+        border-radius: 5px;
+    }
+
+    .next-piece-border {
+        border: 0.5rem solid rgba(95, 66, 226, 0.6);
+        border-radius: 5px;
+        width: 90%;
+    }
+
+    /* .next-score-container {
+        display: flex;
+        flex-direction: row;
+            margin: 0.4rem;
+    } */
+
+    .game-info {
+        font-size: 1rem;
+        padding-left: 5px;
+    }
+
     .game-control-container {
         display: block;
-        width : 80%;
+        width : 90vw;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -157,6 +192,18 @@ body {
         border-radius: 10px;
         padding: 1px;
         border: 1px solid black;
+    }
+
+    #game-level {
+        font-size: 1.5rem;
+    }
+
+    #game-score {
+        font-size: 1.5rem;
+    }
+
+    #total-lines {
+        font-size: 1.5rem;
     }
 
     .control-group {
@@ -169,16 +216,11 @@ body {
         width: 100%;
         text-align: center;
         height: 4rem;
-
-            border-radius: 10px;
-
+        border-radius: 10px;
         border: 1px solid white;
-        
         padding: 0.4rem;
-        
         display: flex;
         align-items: center;
         justify-content: center;
     }
-
 }

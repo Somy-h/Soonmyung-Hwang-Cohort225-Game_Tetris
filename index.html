@@ -18,19 +18,31 @@
                 <div class="game-board-border">
                     <canvas id="game-board" class="game-board"></canvas>
                 </div>
-                <small class="game-help">SPARCEBAR: drop,  UP: rotation</small>
+                <small class="game-help">SPACEBAR: drop,  UP: rotation</small>
             </div>
             <div class="game-info-container">
-                <div class="next-piece-border">
-                    <p class="game-info">Next Shape</p>
-                    <canvas id="next-shape" class="next-shape"></canvas>
+                <div class="next-score-container">
+                    <div class="next-piece-border">
+                        <p class="game-info">Next Shape</p>
+                        <canvas id="next-shape" class="next-shape"></canvas>
+                    </div>
+                    <table>
+                        <tr>
+                            <td class="game-info">Level:</td>
+                            <td><span id="game-level"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="game-info">Score:</td>
+                            <td><span id="game-score"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="game-info">Lines:</td>
+                            <td><span id="total-lines"></span></td>
+                        </tr>
+                    </table>
                 </div>
-                <div>
-                    <p class="game-info">Level: <span id="game-level"></span></p>
-                    <p class="game-info">Score: <span id="game-score"></span></p>
-                    <p class="game-info">Lines: <span id="total-lines"></span></p>
-                    <button id="btn-restart" type="button" class="btn">Restart</button>
-                </div>
+
+                <button id="btn-restart" type="button" class="btn">Restart</button>
             </div>
         </div>
         <div class="game-control-container">
@@ -53,6 +65,6 @@
 
         </div>
     </div>
-    <script type="module" src="tetris.js"></script>
+    <script type="module" src="tetris2.js"></script>
 </body>
 </html> 

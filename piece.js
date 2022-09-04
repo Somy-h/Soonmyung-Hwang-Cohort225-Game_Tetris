@@ -1,4 +1,4 @@
-import { "tetis-config" as config } from './config.js';
+import { "tetris-config" as config } from './config.js';
 import { "peices-info" as shapes } from './shapes.js';
 import { Block } from './block.js';
 
@@ -32,24 +32,12 @@ export class Piece {
     this.shapeId = Math.floor(Math.random() * (config.colors.length - 1) + 1);  
   }
 
-  // draw() {         
-  //   shapes[this.shapeId][this.rotateIdx].forEach ((row, i) => {
-  //     row.forEach ((col, j) => {
-  //       if (col > 0) {
-  //         this.drawBorder(this.x + j, this.y + i, 1, 1);
-  //         this.ctx.fillStyle = this.color;
-  //         this.ctx.fillRect(this.x + j, this.y + i, 1, 1); 
-  //         this.draw3dEffect(this.x + j, this.y + i, 1, 1);
-  //       }
-  //     });
-  //   });
-  // } 
-
-   draw() {         
+  draw() {  
+    let blockObj = new Block();       
     shapes[this.shapeId][this.rotateIdx].forEach ((row, i) => {
       row.forEach ((col, j) => {
         if (col > 0) {
-          new Block().draw(this.ctx, this.x + j, this.y + i, this.color);
+          blockObj.draw(this.ctx, this.x + j, this.y + i, this.color);
         }
       });
     });

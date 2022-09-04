@@ -3,7 +3,7 @@ Referenced: Michael Karen's Tetris game
 https://github.com/melcor76/js-tetris.git
 */
 
-import { "tetis-config" as config } from './config.js';
+import { "tetris-config" as config } from './config.js';
 import { "user-info" as user } from './user.js';
 import { GameBoard } from './gameBoard.js';
 
@@ -111,11 +111,16 @@ function gameOver() {
   //console.log("game over");
   cancelAnimationFrame(gameBoard.requestId);
   gameBoard.requestId = -1; // initialize for checking gameOver
+  //const unitSize = ctx.width / config.cols;
+  showMessage('GAME OVER');
+}
+
+function showMessage(message) {
   ctx.fillStyle = 'black';
-  ctx.fillRect(1, 6, 8, 1.4);  //scale * 60(UNIT_SIZE)
-  ctx.font = '1px Arial'
+  ctx.fillRect(1, 8, 8, 2);  //scale * 60(UNIT_SIZE)
+  ctx.font = '1.2px Arial'
   ctx.fillStyle = 'red';
-  ctx.fillText('GAME OVER', 2, 7);
+  ctx.fillText(message, 1.4, 9.4);
 }
 
 function updateGameInfo() {

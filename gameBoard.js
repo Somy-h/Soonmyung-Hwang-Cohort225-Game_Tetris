@@ -1,4 +1,4 @@
-import { "tetis-config" as config } from './config.js';
+import { "tetris-config" as config } from './config.js';
 import { "user-info" as user } from './user.js';
 import { Block } from './block.js';
 import { Piece } from './piece.js';
@@ -13,13 +13,12 @@ export class GameBoard {
   } 
 
   init() {                
-    this.resize();
-    
     this.requestId = -1; 
     this.shapePiece = new Piece(this.ctx);
     this.shapePiece.setInitialPosition();
     this.nextPiece = new Piece(this.nextCtx);
     this.boardArray = this.initBoard();
+    this.resize();
     this.nextPiece.draw();
   }
 
@@ -31,17 +30,20 @@ export class GameBoard {
   draw() {
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this.drawBoard();
-    this.shapePiece.draw();
+    this.shapePiece?.draw();
   }
 
   drawBoard() {
+    let blockObj = new Block();
     for (let i = 0; i < config.rows; i++) {
       for (let j = 0;  j < config.cols; j++) {
         if (this.boardArray[i][j] > 0) {
-          // this.shapePiece.drawBorder(j, i, 1, 1); 
-          // this.ctx.fillStyle = config.colors[this.boardArray[i][j]];
-          // this.ctx.fillRect(j, i, 1, 1);
-          new Block().draw(this.ctx, j, i, config.colors[this.boardArray[i][j]])
+          blockObj.draw(
+            this.ctx, 
+            j, 
+            i, 
+            config.colors[this.boardArray[i][j]]
+          );
         }
       }
     }
@@ -51,7 +53,10 @@ export class GameBoard {
     const windowWidth = (window.innerWidth > 992) ? 992 : window.innerWidth;
     const windowHeight = window.innerHeight;
     const mainGameWidth = windowWidth * 0.62; // 62% of the window width
-    const unitSize = Math.min(Math.floor(mainGameWidth/config.cols), Math.floor(windowHeight*0.95/config.rows));
+    const unitSize = Math.min(
+      Math.floor(mainGameWidth/config.cols), 
+      Math.floor(windowHeight*0.95/config.rows)
+    );
     this.ctx.canvas.width = config.cols * unitSize;
     this.ctx.canvas.height = config.rows * unitSize;           
     this.nextCtx.canvas.width = 4 * unitSize;
@@ -60,8 +65,8 @@ export class GameBoard {
     this.nextCtx.scale(unitSize, unitSize);
     this.nextCtx.clearRect(0, 0, this.nextCtx.canvas.width, this.nextCtx.canvas.height); 
   }
- 
-  setMovePosition(direction) {
+  
+  move(direction) {
     let testPieceBeforeMove = {...this.shapePiece};
     if (direction === config.keys.LEFT) {  // move left
       testPieceBeforeMove.x -= 1;
@@ -103,6 +108,10 @@ export class GameBoard {
     return true;
   }
 
+  /* 
+    Referenced: Michael Karen's Tetris game
+    https://github.com/melcor76/js-tetris.git
+  */
   isValideMove(testPiece) {
     // inside game board, collision check
     const testShape = shapes[testPiece.shapeId][testPiece.rotateIdx];

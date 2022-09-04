@@ -1,4 +1,4 @@
-export { config as "tetis-config"};
+export { config as "tetris-config"};
 
 const config = {
   cols: 10,
@@ -11,6 +11,14 @@ const config = {
     RIGHT: 39,      // move to right
     UP: 38,         // rotate
     DOWN: 40,       // soft drop
+  },
+
+  controlBtn: {
+    'btn-left' : 37,  // LEFT
+    'btn-up' : 38,    // UP
+    'btn-right' : 39, // RIGHT,
+    'btn-hard-drop' : 32, // SPACE
+    'btn-soft-drop' : 40  // DOWN
   },
 
   colors: [
