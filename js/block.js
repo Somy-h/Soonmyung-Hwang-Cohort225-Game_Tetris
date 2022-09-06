@@ -7,12 +7,17 @@ export class Block {
     this.draw3dEffect(ctx, x, y, color);
   }
 
+  drawBonus(ctx, x, y, color) {
+    this.draw(ctx, x, y, color);
+    this.drawHeart(ctx, x, y, color);
+  }
+
   drawBorder(ctx, x, y, color, thickness = 0.04)
   {
     ctx.strokeStyle = this.shadeColor(color, -80);
     ctx.lineWidth = 0.04;
     ctx.shadowColor = this.shadeColor(color, -80);
-    // ctx.shadowBlur = 2;
+    
     ctx.strokeRect(x, y, 1, 1);
   }
 
@@ -49,6 +54,24 @@ export class Block {
     ctx.lineTo(x + 1 - 1/8, y + 1 - 1/8);
     ctx.lineWidth = 0.05;
     ctx.stroke();
+  }
+
+  drawHeart(ctx, x, y, color) {
+    ctx.beginPath();
+    ctx.fillStyle = '#FF0000';
+    ctx.shadowBlur = 2;
+    ctx.moveTo(x + 1/2, y + 1 - 1/4);
+    ctx.bezierCurveTo(x + 1/6, y + 1/2, x + 1/4, y + 1/6, x + 1/2, y + 1/3);
+    ctx.moveTo(x + 1/2, y + 1 - 1/4);
+    ctx.bezierCurveTo(x + 1 - 1/6, y + 1/2, x + 1 - 1/4, y + 1/6, x + 1/2, y + 1/3);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.fillStyle = '#F7CDCD';
+    ctx.shadowBlur = 2;
+    ctx.arc(x + 3/5, y + 2/5, 0.06, 0, 2 * Math.PI);
+    ctx.fill();
   }
   
 

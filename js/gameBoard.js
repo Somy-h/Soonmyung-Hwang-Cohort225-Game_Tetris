@@ -50,12 +50,19 @@ export class GameBoard {
     for (let i = 0; i < config.rows; i++) {
       for (let j = 0;  j < config.cols; j++) {
         if (this.boardArray[i][j] > 0) {
-          blockObj.draw(
-            this.ctx, 
-            j, 
-            i, 
-            config.colors[this.boardArray[i][j]]
-          );
+          this.boardArray[i][j] < config.colors.length - 1
+            ? blockObj.draw(
+                this.ctx, 
+                j, 
+                i, 
+                config.colors[this.boardArray[i][j]]
+              )
+            : blockObj.drawBonus(
+                this.ctx, 
+                j, 
+                i, 
+                config.colors[this.boardArray[i][j]]
+              )
         }
       }
     }
@@ -89,11 +96,9 @@ export class GameBoard {
     direction === config.keys.LEFT ? testPiece.x -= 1
       : direction === config.keys.RIGHT ? testPiece.x += 1
       : direction === config.keys.UP ? testPiece.rotateIdx = ++testPiece.rotateIdx % shapes[this.piece.shapeId].length
-      //: direction === config.keys.DOWN ? testPiece.y += 1
       : testPiece.y += 1
        
     if (direction === config.keys.SPACE) { // hard down
-      //testPiece.y -= 1; // begin with putting it back
       while (this.isValideMove(testPiece)) {
         this.piece.y = testPiece.y;
         testPiece.y += 1;

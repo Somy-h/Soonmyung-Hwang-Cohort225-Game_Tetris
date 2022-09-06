@@ -85,17 +85,17 @@ body {
 
 #game-level {
     color: rgb(135, 2, 2);
-    font-size: 3rem;
+    font-size: 2rem;
     font-weight: 900;
 }
 #game-score {
     color: rgb(23, 1, 107);
-    font-size: 3rem;
+    font-size: 2rem;
     font-weight: 900;
 }
 #total-lines {
     color: rgb(1, 74, 8);
-    font-size: 3rem;
+    font-size: 2rem;
     font-weight: 900;
 }
 

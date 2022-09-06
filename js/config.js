@@ -22,13 +22,14 @@ const config = {
 
   colors: [
     '',
-    '#9acd32',  //yellowgreen,
+    '#A9E449',  //yellowgreen,
     '#EA3CD9',  //hotpink,
     '#A936F6',  //darkslateblue
-    '#E4A124',  //orange,
+    '#E49A24',  //orange,
     '#2AA6CF',  //deepskyblue,
-    '#E9D44D',  //gold,
+    '#33A355',  //gold,
     '#EC2525',  //red
+    '#E9DC25',  //bonus
   ],
   
   levels: [

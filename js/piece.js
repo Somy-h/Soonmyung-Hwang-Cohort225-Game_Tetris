@@ -35,8 +35,10 @@ export class Piece {
     shapes[this.shapeId][this.rotateIdx].forEach ((row, i) => {
       row.forEach ((col, j) => {
         if (col > 0) {
-          blockObj.draw(this.ctx, this.x + j, this.y + i, this.color);
-        }
+          (this.shapeId < config.colors.length - 1)
+            ? blockObj.draw(this.ctx, this.x + j, this.y + i, this.color)
+            : blockObj.drawBonus(this.ctx, this.x + j, this.y + i, this.color)
+          }
       });
     });
   }
