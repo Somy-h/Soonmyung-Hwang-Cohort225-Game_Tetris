@@ -41,19 +41,24 @@
                         </tr>
                     </table>
                 </div>
-
-                <button id="btn-restart" type="button" class="btn">Restart</button>
+                <div class="game-play-buttons">
+                    <button id="btn-play" class="btn ctrl-play-ico play" type="button">
+                        <i class="fa-solid fa-pause" id="game-pause"></i>
+                        <i class="fa-solid fa-play" id="game-play"></i>
+                    </button>
+                    <button id="btn-restart" type="button" class="btn ctrl-play-ico">
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </button>
+                    <button id="btn-sound" class="btn ctrl-play-ico sound on" type="button">
+                        <i class="fa-solid fa-volume-high" id="sound-on"></i>
+                        <i class="fa-solid fa-volume-xmark" id="sound-off"></i>
+                        <!-- &#x1F3C6; sucess -->
+                    </button>
+                </div>
             </div>
         </div>
         <div class="game-control-container">
-            <!-- <i class="fa-solid fa-pause"></i><i class="fa-solid fa-play"></i>
-            <i class="fa-solid fa-play"></i> -->
-
-            <!-- <button id="btn-left" type="button" class="btn control">Left</button>
-            <button id="btn-up" type="button" class="btn control">Rotate</button>
-            <button id="btn-right" type="button" class="btn control">Right</button>
-            <button id="btn-hard-drop" type="button" class="btn drop">Hard Drop</button> -->
-            <div class="control-group">
+           <div class="control-group">
                 <div id="btn-left" class ="controlBtn"><i class="fa-solid fa-arrow-left align-center"></i></div>
                 <div id="btn-up" class ="controlBtn"><i class="fa-solid fa-arrow-up"></i></div>
                 <div id="btn-right" class ="controlBtn"><i class="fa-solid fa-arrow-right"></i></div>
@@ -65,6 +70,8 @@
 
         </div>
     </div>
-    <script type="module" src="tetris2.js"></script>
+    <script type="text/javascript" src="./js/config.js"></script>
+    <script type="text/javascript" src="./js/data.js"></script>
+    <script type="module" src="./js/tetris.js"></script>
 </body>
 </html> 

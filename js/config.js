@@ -1,9 +1,8 @@
-export { config as "tetris-config"};
-
 const config = {
   cols: 10,
   rows: 18,
   levelUpLineNumbers: 15,
+  rewardPoints: 3000,
 
   keys: {
     SPACE: 32,      // move hard drop
@@ -46,12 +45,20 @@ const config = {
   ],
 
   points: {
-    LINE: 100,
-    DOUBLE: 300,
-    TRIPLE: 500,
-    QUADRUPLE: 800,
-    HARD_DROP: 2,
-    DROP: 1
+    [0]: 1,
+    [1]: 100,
+    [2]: 300,
+    [3]: 500,
+    [4]: 800,
+    HARD_DROP: 1, // extra points
   },
 
+  sound: {
+    background: './resources/background.mp3',
+    start: './resources/start.mp3',
+    hardDrop: './resources/drop.mp3',
+    lineClear: './resources/lineClear.mp3',
+    levelUp: './resources/levelUp.mp3',
+    gameOver: './resources/over.mp3',
+  }
 }

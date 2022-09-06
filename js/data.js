@@ -80,4 +80,7 @@ const shapes = [
     [0, 0, 7, 0]]]
 ];
 
-export { shapes as "peices-info"};
+const gameState = {
+  play: 0,  // 1: play, 0: pause
+  sound : 1 // 1: on, 0: off
+};

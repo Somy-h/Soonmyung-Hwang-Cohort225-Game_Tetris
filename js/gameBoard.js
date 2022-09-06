@@ -1,9 +1,6 @@
-import { "tetris-config" as config } from './config.js';
-import { "user-info" as user } from './user.js';
+import { User } from './user.js';
 import { Block } from './block.js';
 import { Piece } from './piece.js';
-import { "peices-info" as shapes } from './shapes.js';
-
 
 export class GameBoard {
   constructor(ctx, nextCtx) {
@@ -14,23 +11,38 @@ export class GameBoard {
 
   init() {                
     this.requestId = -1; 
-    this.shapePiece = new Piece(this.ctx);
-    this.shapePiece.setInitialPosition();
+    this.piece = new Piece(this.ctx);
     this.nextPiece = new Piece(this.nextCtx);
-    this.boardArray = this.initBoard();
+    this.piece.setInitialPosition();
+    this.initBoard();
     this.resize();
     this.nextPiece.draw();
   }
 
   initBoard() {  // setting [config.rows][config.cols] = 0
-    return Array.from({length: config.rows}, 
-                      () => Array(config.cols).fill(0));
+    this.boardArray = Array.from(
+      {length: config.rows}, 
+      () => Array(config.cols).fill(0)
+    );
+  }
+
+  setUser(user) {
+    this.user = user;
+  }
+
+  setSound(sound) {
+    this.sound = sound;
   }
 
   draw() {
-    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    this.ctx.clearRect(
+      0, 
+      0, 
+      this.ctx.canvas.width, 
+      this.ctx.canvas.height
+    );
     this.drawBoard();
-    this.shapePiece?.draw();
+    this.piece.draw();
   }
 
   drawBoard() {
@@ -63,35 +75,39 @@ export class GameBoard {
     this.nextCtx.canvas.height = 4 * unitSize;
     this.ctx.scale(unitSize, unitSize);
     this.nextCtx.scale(unitSize, unitSize);
-    this.nextCtx.clearRect(0, 0, this.nextCtx.canvas.width, this.nextCtx.canvas.height); 
+    this.nextCtx.clearRect(
+      0, 
+      0, 
+      this.nextCtx.canvas.width, 
+      this.nextCtx.canvas.height
+    ); 
   }
-  
-  move(direction) {
-    let testPieceBeforeMove = {...this.shapePiece};
-    if (direction === config.keys.LEFT) {  // move left
-      testPieceBeforeMove.x -= 1;
-    } else if (direction === config.keys.RIGHT) {   // move right
-      testPieceBeforeMove.x += 1;
-    } else if (direction === config.keys.UP) {   // rotate
-      testPieceBeforeMove.rotateIdx = ++testPieceBeforeMove.rotateIdx % shapes[this.shapePiece.shapeId].length;
-    } else if (direction === config.keys.DOWN) { // soft down
-      testPieceBeforeMove.y += 1;
 
-    } else if (direction === config.keys.SPACE) {    // hard down
-      while (this.isValideMove(testPieceBeforeMove)) {
-        this.shapePiece.y = testPieceBeforeMove.y;
-        testPieceBeforeMove.y += 1;
-      }
-      return this.processHitBottom();
-    } else {
-      testPieceBeforeMove.y += 1;     // otherwise drop
-    }
+  move(direction) {
     
-    if (this.isValideMove(testPieceBeforeMove)) {
-      this.shapePiece.x = testPieceBeforeMove.x;
-      this.shapePiece.y = testPieceBeforeMove.y;
-      this.shapePiece.rotateIdx = testPieceBeforeMove.rotateIdx;
-    }else if (direction === -1) { // ready for a new piece
+    let testPiece = {...this.piece};  
+    direction === config.keys.LEFT ? testPiece.x -= 1
+      : direction === config.keys.RIGHT ? testPiece.x += 1
+      : direction === config.keys.UP ? testPiece.rotateIdx = ++testPiece.rotateIdx % shapes[this.piece.shapeId].length
+      //: direction === config.keys.DOWN ? testPiece.y += 1
+      : testPiece.y += 1
+       
+    if (direction === config.keys.SPACE) { // hard down
+      //testPiece.y -= 1; // begin with putting it back
+      while (this.isValideMove(testPiece)) {
+        this.piece.y = testPiece.y;
+        testPiece.y += 1;
+      }
+      this.sound.play('hardDrop');
+      this.user.setLineScore('HARD_DROP');
+      return this.processHitBottom();
+    } 
+    
+    if (this.isValideMove(testPiece)) {
+      this.piece.x = testPiece.x;
+      this.piece.y = testPiece.y;
+      this.piece.rotateIdx = testPiece.rotateIdx;
+    } else if (direction === -1) { // ready for a new piece
       return this.processHitBottom();
     }
     return true;
@@ -100,7 +116,7 @@ export class GameBoard {
   processHitBottom() {
     this.saveShapeintoBoardArray();
     this.checkClearLines();
-    if (this.shapePiece.y === 0) {
+    if (this.piece.y === 0) {
       // GAME OVER
       return false;
     }
@@ -133,54 +149,39 @@ export class GameBoard {
   }
 
   saveShapeintoBoardArray() {
-    const shape = shapes[this.shapePiece.shapeId][this.shapePiece.rotateIdx];
+    const shape = shapes[this.piece.shapeId][this.piece.rotateIdx];
     shape.forEach((row, j) => {
       row.forEach((col, i) => {
         if (col > 0) {
-          this.boardArray[this.shapePiece.y + j][this.shapePiece.x + i] = col;
+          this.boardArray[this.piece.y + j][this.piece.x + i] = col;
         }
       });
     });
   }
 
   checkClearLines() {
-    let clearLineNum = 0;
+    let clearLines = 0;
     this.boardArray.forEach((row, j) => {
       if (row.every((col) => col > 0)) {
-        //remove the line
         this.boardArray.splice(j, 1);
         this.boardArray.unshift(Array(config.cols).fill(0));
-        clearLineNum++;
-        //debugger;
+        this.sound.play('lineClear');
+        clearLines++;
       }
     });
-    if (clearLineNum > 0) {
-      this.setClearLinePoint(clearLineNum);
-    } 
+    if (clearLines > 0) {
+      this.user.update(clearLines);
+    } else  {
+      this.user.setLineScore(clearLines);
+    }
   }
 
   showNextPiece() {
-    this.shapePiece = this.nextPiece;
-    this.shapePiece.ctx = this.ctx;
-    this.shapePiece.setInitialPosition();
+    this.piece = this.nextPiece;
+    this.piece.ctx = this.ctx;
+    this.piece.setInitialPosition();
     this.nextPiece = new Piece(this.nextCtx);
     this.nextCtx.clearRect(0, 0, this.nextCtx.canvas.width, this.nextCtx.canvas.height);
     this.nextPiece.draw();
-  }
-
-  setClearLinePoint(lines) {
-    switch(lines) {
-      case 1: user.score += config.points.LINE;
-        break;
-      case 2: user.score +=  config.points.DOUBLE;
-        break;
-      case 3: user.score += config.points.TRIPLE;
-        break;
-      case 4: user.score += config.points.QUADRUPLE;
-        break;
-    }
-    user.lines += lines;
-    user.level = Math.floor(user.lines / config.levelUpLineNumbers); // level up: every 15 lines 
-    user.level = (Math.floor(user.lines / config.levelUpLineNumbers) >= config.levels.length) ? config.levels.length : user.level;
   }
 }

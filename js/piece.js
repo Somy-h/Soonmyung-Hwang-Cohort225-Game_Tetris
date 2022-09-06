@@ -1,5 +1,3 @@
-import { "tetris-config" as config } from './config.js';
-import { "peices-info" as shapes } from './shapes.js';
 import { Block } from './block.js';
 
 export class Piece {
@@ -42,4 +40,9 @@ export class Piece {
       });
     });
   }
+
+  // rotate() {
+    
+  // }
+  
 }

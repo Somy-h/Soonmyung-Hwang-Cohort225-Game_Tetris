@@ -20,6 +20,7 @@ body {
     overflow: hidden;
     min-width: 380px;
     max-width: 992px;
+    min-height: 660px;
 }
 
 .game-container {
@@ -63,13 +64,14 @@ body {
 
 .next-piece-border {
     border: 1rem solid rgba(95, 66, 226, 0.6);
-    border-radius: 1rem;
+    border-radius: 0.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     padding-top: 0.5rem;
     box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+    margin-bottom: 0.4rem;
 }
 
 #next-shape {
@@ -99,11 +101,21 @@ body {
 
 .btn {
     border-radius: 0.5rem;
-    background-color: rgba(0, 0, 0, 0.1);
+    /* background-color: rgba(0, 0, 0, 0.1); */
     color: black;
     padding: 0.4rem 0.4rem;
     font-family: inherit;
-    font-size: 1rem;
+    font-size: 1.2rem;
+}
+
+.btn.ctrl-play-ico {
+    background-color:rgba(95, 66, 226, 0.4);
+    color:#382261;
+    width: 3.4rem;
+    height: 3rem;
+    margin: 0.2rem;
+    border: none;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
 }
 
 .btn.control {
@@ -116,14 +128,33 @@ body {
     font-size: 0.9rem;
 }
 
-.btn:hover {
-    background-color: black;
+.btn:hover, 
+.btn:active {
+    background-color: rgb(73, 17, 95);
     color: white;
 }
 
 .btn:active {
     transform: scale(0.92);
 }
+
+.sound #sound-off,
+.play #game-play {
+    display: block;
+}
+.sound #sound-on,
+.play #game-pause {
+    display: none;
+}
+.sound.on #sound-on,
+.play.on #game-pause {
+    display: block;
+}
+.sound.on #sound-off,
+.play.on #game-play  {
+    display: none;
+}
+
 
 .game-control-container {
     display: none;
@@ -188,7 +219,8 @@ body {
         align-items: center;
         justify-content: center;
         margin-top: 1rem;
-        background-color: lightgray;
+        background: rgb(238, 174, 202);
+        background: linear-gradient(90deg, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 100%);
         border-radius: 10px;
         padding: 1px;
         border: 1px solid black;
