@@ -216,6 +216,7 @@ class Tetris {
     document.getElementById('game-level').innerText = this.user.level + 1;
     document.getElementById('game-score').innerText = this.user.score;
     document.getElementById('total-lines').innerText = this.user.lines;
+    document.getElementById('total-hearts').innerText = this.user.hearts;
   }
 }
 

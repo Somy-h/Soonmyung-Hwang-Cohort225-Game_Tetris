@@ -83,6 +83,10 @@ body {
     font-size: 1.2rem;
 }
 
+.game-info .hearts {
+    color: red;
+}
+
 #game-level {
     color: rgb(135, 2, 2);
     font-size: 2rem;
@@ -98,6 +102,13 @@ body {
     font-size: 2rem;
     font-weight: 900;
 }
+#total-hearts {
+    color: red;
+    font-size: 2rem;
+    font-weight: 900;
+}
+
+
 
 .btn {
     border-radius: 0.5rem;
@@ -235,6 +246,9 @@ body {
     }
 
     #total-lines {
+        font-size: 1.5rem;
+    }
+    #total-hearts {
         font-size: 1.5rem;
     }
 

@@ -2,12 +2,14 @@ export class User {
   constructor(sounds) {
     this.level = 0; // level 0-9 : display 1-10
     this.score = 0;
+    this.hearts = 0;
     this.lines = 0; // # of lines cleared
     this.sounds = sounds;
   }
 
-  setLineScore(lines) {
+  setLineScore(lines, hearts = 0) {
     this.score += config.points[lines];
+    this.score += hearts;
   }
 
   increaseLine(lines) {
@@ -21,8 +23,9 @@ export class User {
       : this.level;
   }
      
-  update(lines) {
-    this.setLineScore(lines);
+  update(lines, hearts) {
+    this.hearts += hearts;
+    this.setLineScore(lines, hearts);
     this.increaseLine(lines);
     let prevLevel = this.level;
     this.level = Math.floor(this.lines / config.levelUpLineNumbers); // level up: every 15 lines 

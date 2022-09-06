@@ -95,7 +95,8 @@ export class GameBoard {
     let testPiece = {...this.piece};  
     direction === config.keys.LEFT ? testPiece.x -= 1
       : direction === config.keys.RIGHT ? testPiece.x += 1
-      : direction === config.keys.UP ? testPiece.rotateIdx = ++testPiece.rotateIdx % shapes[this.piece.shapeId].length
+      : direction === config.keys.UP ? testPiece.rotateIdx = this.getRotateIdx(testPiece)
+      //: direction === config.keys.UP ? testPiece.rotateIdx = ++testPiece.rotateIdx % shapes[this.piece.shapeId].length
       : testPiece.y += 1
        
     if (direction === config.keys.SPACE) { // hard down
@@ -116,6 +117,15 @@ export class GameBoard {
       return this.processHitBottom();
     }
     return true;
+  }
+
+  getRotateIdx(testPiece) {
+  
+    (testPiece.shapeId < config.colors.length - 1)
+      ? (testPiece.rotateIdx = ++testPiece.rotateIdx % shapes[testPiece.shapeId].length)
+      : (testPiece.rotateIdx = Math.floor(Math.random() * shapes[testPiece.shapeId].length))
+
+    return testPiece.rotateIdx;
   }
 
   processHitBottom() {
@@ -166,8 +176,12 @@ export class GameBoard {
 
   checkClearLines() {
     let clearLines = 0;
+    let hearts = 0;
     this.boardArray.forEach((row, j) => {
       if (row.every((col) => col > 0)) {
+        hearts = row.filter(col => col === config.colors.length - 1).length;
+        // debugger;
+        // console.log("hearts:" + hearts);
         this.boardArray.splice(j, 1);
         this.boardArray.unshift(Array(config.cols).fill(0));
         this.sound.play('lineClear');
@@ -175,7 +189,7 @@ export class GameBoard {
       }
     });
     if (clearLines > 0) {
-      this.user.update(clearLines);
+      this.user.update(clearLines, hearts);
     } else  {
       this.user.setLineScore(clearLines);
     }

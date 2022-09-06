@@ -41,8 +41,10 @@ const config = {
     250,
     200,
     150,
+    120,
     100,
-    70   // level10: 70ms 
+    80,
+    70   // level12: 70ms 
   ],
 
   points: {
